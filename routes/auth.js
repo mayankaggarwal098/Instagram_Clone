@@ -7,10 +7,6 @@ const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 
-router.get("/", auth, (req, res) => {
-  res.send("secured text");
-});
-
 router.post("/signup", async (req, res) => {
   const { error } = validateSignup(req.body);
   if (error) return res.status(400).send(error.details[0].message);
