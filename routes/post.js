@@ -3,6 +3,19 @@ const auth = require("../middleware/auth");
 const { Post, validatePost } = require("../models/post");
 const router = express.Router();
 
+router.get("/allpost", async (req, res) => {
+  const posts = await Post.find().populate("postedBy", "_id name");
+  res.send(posts);
+});
+
+router.get("/mypost", auth, async (req, res) => {
+  const post = await Post.find({ postedBy: req.user._id }).populate(
+    "postedBy",
+    "_id name"
+  );
+  res.send(post);
+});
+
 router.post("/createpost", auth, async (req, res) => {
   const { error } = validatePost(req.body);
   if (error) return res.status(400).send(error.details[0].message);
