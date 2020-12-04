@@ -1,3 +1,34 @@
 a {
   color: black !important;
 }
+
+.docenter {
+  margin: 20px auto;
+  text-align: center;
+  max-width: 400px;
+  padding: 20px;
+}
+.link {
+  color: rgb(14, 141, 245) !important;
+  cursor: pointer !important;
+}
+
+.btn-block {
+  margin: 10px 0px 0px 0px;
+  width: 100%;
+}
+
+.mypost {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.mypic {
+  width: 30%;
+  margin: 10px 0px;
+}
+.home {
+  max-width: 50%;
+  margin: 10px auto;
+}
