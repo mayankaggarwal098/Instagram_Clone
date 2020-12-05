@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Profile() {
   return (
-    <div class="container">
+    <div className="container">
       <div
         style={{
           display: "flex",
