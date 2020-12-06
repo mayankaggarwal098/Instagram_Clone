@@ -20,11 +20,12 @@ router.post("/createpost", auth, async (req, res) => {
   const { error } = validatePost(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { title, body } = req.body;
+  const { title, body, img } = req.body;
   req.user.password = undefined;
   const post = new Post({
     title,
     body,
+    photo: img,
     postedBy: req.user,
   });
 

@@ -6,8 +6,10 @@ const tokenKey = "token";
 http.setJwt(getJwt()); //to get rid of bidirectional dependencies
 
 export async function login(email, password) {
-  const { data: jwt } = await http.post(apiEndpoint, { email, password });
-  localStorage.setItem(tokenKey, jwt);
+  const { data } = await http.post(apiEndpoint, { email, password });
+  //localStorage.setItem(tokenKey, jwt);
+  localStorage.setItem(tokenKey, data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
 }
 
 export async function loginWithJwt(jwt) {

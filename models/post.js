@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: "empty",
+    required: true,
   },
   postedBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +25,7 @@ function validatePost(post) {
   const schema = Joi.object({
     title: Joi.string().required(),
     body: Joi.string().required(),
+    img: Joi.string().required(),
   });
   return schema.validate(post);
 }
