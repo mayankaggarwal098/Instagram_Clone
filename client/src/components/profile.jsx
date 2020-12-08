@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import http from "./../services/httpService";
 
 export default function Profile() {
+  const [post, setPost] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    async function getMyPost() {
+      const { data } = await http.get("/mypost", {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      });
+      setPost(data);
+    }
+    getMyPost();
+  });
   return (
     <div className="container">
       <div
@@ -19,7 +33,7 @@ export default function Profile() {
           />
         </div>
         <div>
-          <h4>Mayank Aggarwal</h4>
+          <h4>{user.name}</h4>
           <div
             style={{
               display: "flex",
@@ -35,41 +49,16 @@ export default function Profile() {
         </div>
       </div>
       <div className="mypost">
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
-        <img
-          src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
-          alt="profile img"
-          className="mypic"
-        />
+        {post.map((item) => {
+          return (
+            <img
+              src={item.photo}
+              alt={item.title}
+              key={item._id}
+              className="mypic"
+            />
+          );
+        })}
       </div>
     </div>
   );

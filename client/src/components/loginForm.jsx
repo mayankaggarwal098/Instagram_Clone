@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import logo from "../instagram-font-png-1.png";
 import { Link, useHistory } from "react-router-dom";
 import auth from "../services/authService";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
+import { UserContext } from "../App";
 
 export default function LoginForm() {
+  const { state, dispatch } = useContext(UserContext);
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +34,9 @@ export default function LoginForm() {
     if (validate()) return;
     try {
       await auth.login(email, password);
+      const user = JSON.parse(localStorage.getItem("user"));
+      dispatch({ type: "USER", payload: user });
+      toast("Successfully Signedin");
       history.push("/");
       //window.location = "/";
     } catch (ex) {

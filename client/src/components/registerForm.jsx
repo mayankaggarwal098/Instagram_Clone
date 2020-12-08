@@ -36,6 +36,7 @@ export default function RegisterForm() {
     try {
       const response = await register({ name, email, password });
       auth.loginWithJwt(response.headers["x-auth-token"]);
+      toast("Successfully Signedup");
       history.push("/login");
       //window.location = "/";
     } catch (ex) {

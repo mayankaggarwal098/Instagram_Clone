@@ -25,13 +25,14 @@ export default function CreatePost() {
       })
         .then((res) => res.json())
         .then((data) => {
-          // if(data.error){
-          //    M.toast({html: data.error,classes:"#c62828 red darken-3"})
-          // }
-          // else{
-          //     M.toast({html:"Created post Successfully",classes:"#43a047 green darken-1"})
-          history.push("/");
-          // }
+          if (data.error) {
+            toast.error(data.error);
+            //    M.toast({html: data.error,classes:"#c62828 red darken-3"})
+          } else {
+            //     M.toast({html:"Created post Successfully",classes:"#43a047 green darken-1"})
+            toast("Successfully Posted");
+            history.push("/");
+          }
         })
         .catch((err) => {
           console.log(err);
