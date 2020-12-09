@@ -6,13 +6,14 @@ import { ToastContainer } from "react-toastify";
 import Home from "./components/home";
 import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
-import Profile from "./components/profile";
+import Profile from "./components/myProfile";
 import CreatePost from "./components/createPost";
 
 import "react-toastify/dist/ReactToastify.css";
 import { initialState, reducer } from "./reducers/userResducer";
 import auth from "./services/authService";
 import Logout from "./components/logout";
+import UserProfile from "./components/userProfile";
 
 export const UserContext = createContext();
 
@@ -32,6 +33,7 @@ const Routes = () => {
   return (
     <div>
       <Switch>
+        <Route path="/profile/:userId" component={UserProfile} />
         <Route path="/login" component={LoginForm} />
         <Route path="/logout" component={Logout} />
         <Route path="/signup" component={RegisterForm} />

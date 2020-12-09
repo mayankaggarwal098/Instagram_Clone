@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import http from "./../services/httpService";
+import { useParams } from "react-router-dom";
+import http from "../services/httpService";
 
-export default function Profile() {
+export default function UserProfile() {
   const [post, setPost] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -15,6 +16,7 @@ export default function Profile() {
     }
     getMyPost();
   });
+
   return (
     <div className="container">
       <div

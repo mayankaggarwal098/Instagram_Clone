@@ -4,7 +4,9 @@ const { Post, validatePost } = require("../models/post");
 const router = express.Router();
 
 router.get("/allpost", auth, async (req, res) => {
-  const posts = await Post.find().populate("postedBy", "_id name");
+  const posts = await Post.find()
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "id_ name");
   res.send(posts);
 });
 
@@ -33,6 +35,61 @@ router.post("/createpost", auth, async (req, res) => {
   res.send(post);
 });
 
-router.put("/like", auth, (req, res) => {});
+router.put("/like", auth, async (req, res) => {
+  const post = await Post.findByIdAndUpdate(
+    req.body.postId,
+    {
+      $push: { likes: req.user._id },
+    },
+    {
+      new: true,
+    }
+  ).populate("postedBy", "_id name");
+
+  res.send(post);
+});
+router.put("/unlike", auth, async (req, res) => {
+  const post = await Post.findByIdAndUpdate(
+    req.body.postId,
+    {
+      $pull: { likes: req.user._id },
+    },
+    { new: true }
+  ).populate("postedBy", "_id name");
+
+  res.send(post);
+});
+
+router.put("/comment", auth, async (req, res) => {
+  const comment = {
+    text: req.body.text,
+    postedBy: req.user._id,
+  };
+  const post = await Post.findByIdAndUpdate(
+    req.body.postId,
+    {
+      $push: { comments: comment },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name");
+
+  res.send(post);
+});
+
+router.delete("/deletepost/:id", auth, async (req, res) => {
+  const post = await Post.findById(req.params.id).populate("postedBy", "_id");
+
+  if (!post) {
+    return res.status(400).send("Invalid ID");
+  }
+  if (post.postedBy._id.toString() === req.user._id.toString()) {
+    await post.remove();
+    res.send("deleted successfully");
+  }
+});
 
 module.exports = router;
