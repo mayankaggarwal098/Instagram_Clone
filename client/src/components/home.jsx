@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import http from "../services/httpService";
 import { UserContext } from "../App";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [post, setPost] = useState([]);
@@ -94,7 +95,15 @@ export default function Home() {
         return (
           <div className="card" key={item._id}>
             <h5>
-              {item.postedBy.name}
+              <Link
+                to={
+                  item.postedBy._id !== state._id
+                    ? `/user/${item.postedBy._id}`
+                    : "/profile"
+                }
+              >
+                {item.postedBy.name}
+              </Link>
               {item.postedBy._id === state._id && (
                 <i
                   className="material-icons"

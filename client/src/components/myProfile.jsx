@@ -15,7 +15,7 @@ export default function Profile() {
       setPost(data);
     }
     getMyPost();
-  });
+  }, []);
 
   return (
     <div className="container">

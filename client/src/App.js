@@ -33,7 +33,7 @@ const Routes = () => {
   return (
     <div>
       <Switch>
-        <Route path="/profile/:userId" component={UserProfile} />
+        <Route path="/user/:userId" component={UserProfile} />
         <Route path="/login" component={LoginForm} />
         <Route path="/logout" component={Logout} />
         <Route path="/signup" component={RegisterForm} />
