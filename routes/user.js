@@ -15,6 +15,15 @@ router.get("/user/:id", auth, async (req, res) => {
   res.json({ user, posts });
 });
 
+router.put("/updateProfilePic", auth, async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { profilePic: req.body.profilePic } },
+    { new: true }
+  ).select("-password");
+  res.send(user);
+});
+
 router.put("/follow", auth, async (req, res) => {
   await User.findByIdAndUpdate(
     req.body.otherUserId,
@@ -30,29 +39,25 @@ router.put("/follow", auth, async (req, res) => {
       $push: { following: req.body.otherUserId },
     },
     { new: true }
-  );
+  ).select("-password");
   res.send(user);
 });
 router.put("/unfollow", auth, async (req, res) => {
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     req.body.otherUserId,
     {
       $pull: { followers: req.user._id },
     },
-    { new: true },
-    (err, result) => {
-      if (err) {
-        return res.status(400).send(err);
-      }
-      User.findByIdAndUpdate(
-        req.user._id,
-        {
-          $pull: { following: req.body.otherUserId },
-        },
-        { new: true }
-      );
-    }
+    { new: true }
   );
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $pull: { following: req.body.otherUserId },
+    },
+    { new: true }
+  ).select("-password");
   res.send(user);
 });
 

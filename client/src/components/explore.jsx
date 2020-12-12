@@ -4,12 +4,12 @@ import { UserContext } from "../App";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-export default function Home() {
+export default function Explore() {
   const [post, setPost] = useState([]);
   const { state, dispatch } = useContext(UserContext);
   useEffect(() => {
     async function getAllPost() {
-      const { data } = await http.get("/allfollowingpost", {
+      const { data } = await http.get("/allpost", {
         headers: {
           "x-auth-token": localStorage.getItem("token"),
         },

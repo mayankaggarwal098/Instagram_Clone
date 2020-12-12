@@ -35,6 +35,7 @@ export default function LoginForm() {
     try {
       await auth.login(email, password);
       const user = JSON.parse(localStorage.getItem("user"));
+      console.log(user);
       dispatch({ type: "USER", payload: user });
       toast("Successfully Signedin");
       history.push("/");

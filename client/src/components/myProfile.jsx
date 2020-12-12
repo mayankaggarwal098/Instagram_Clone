@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import http from "../services/httpService";
 import { toast } from "react-toastify";
+import { UserContext } from "./../App";
 
 export default function Profile() {
   const [post, setPost] = useState([]);
+  const [profileImage, setProfileImage] = useState("");
+  const { state, dispatch } = useContext(UserContext);
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log(state);
   useEffect(() => {
     async function getMyPost() {
       const { data } = await http.get("/mypost", {
@@ -16,6 +20,59 @@ export default function Profile() {
     }
     getMyPost();
   }, []);
+
+  useEffect(() => {
+    const updateProfilePic = async () => {
+      if (profileImage) {
+        const data = new FormData();
+        data.append("upload_preset", "insta-clone");
+        data.append("file", profileImage);
+
+        data.append("cloud_name", "cloud098");
+        console.log(data);
+        //const url="https://api.cloudinary.com/v1_1/cloud098/image/upload";
+        try {
+          await saveProfileImage(data);
+        } catch (ex) {
+          if (ex.response && ex.response.status === 400) {
+            toast.error(ex.response.data);
+          }
+        }
+      }
+    };
+    updateProfilePic();
+  }, [profileImage]);
+  const saveProfileImage = (data) => {
+    return fetch("https://api.cloudinary.com/v1_1/cloud098/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        fetch("/updateProfilePic", {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            profilePic: data.url,
+          }),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            console.log(result);
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ ...state, profilePic: result.profilePic })
+            );
+            dispatch({ type: "UPDATEPROFILEPIC", payload: result.profilePic });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+  };
 
   return (
     <div className="container">
@@ -29,10 +86,28 @@ export default function Profile() {
       >
         <div>
           <img
-            src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
+            src={state && state.profilePic}
             alt="profile img"
-            style={{ width: "150px", height: "150px", borderRadius: "75px" }}
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "75px",
+              cursor: "pointer",
+            }}
           />
+          <div className="file-field input-field">
+            <div className="btn  #42a5f5 blue lighten-1">
+              <span>Update Pic</span>
+
+              <input
+                type="file"
+                onChange={(e) => setProfileImage(e.target.files[0])}
+              />
+            </div>
+            <div className="file-path-wrapper">
+              <input className="file-path validate" type="text" />
+            </div>
+          </div>
         </div>
         <div>
           <h4>{user.name}</h4>
@@ -44,9 +119,10 @@ export default function Profile() {
               width: "130%",
             }}
           >
-            <h6>100 posts</h6>
-            <h6>120 followers</h6>
-            <h6>150 following</h6>
+            <h6>{post.length} posts</h6>
+
+            <h6>{state ? state.followers.length : 0} followers</h6>
+            <h6>{state ? state.following.length : 0} following</h6>
           </div>
         </div>
       </div>

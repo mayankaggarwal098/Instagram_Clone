@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import logo from "../instagram-font-png-1.png";
 import { UserContext } from "../App";
+
 const NavBar = () => {
   const { state, dispatch } = useContext(UserContext);
 
@@ -24,6 +25,9 @@ const NavBar = () => {
           )}
           {state && (
             <React.Fragment>
+              <li>
+                <Link to="/explore">Explore</Link>
+              </li>
               <li>
                 <Link to="/profile">Profile</Link>
               </li>

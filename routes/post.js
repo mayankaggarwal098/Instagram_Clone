@@ -9,6 +9,12 @@ router.get("/allpost", auth, async (req, res) => {
     .populate("comments.postedBy", "id_ name");
   res.send(posts);
 });
+router.get("/allfollowingpost", auth, async (req, res) => {
+  const posts = await Post.find({ postedBy: { $in: req.user.following } })
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "id_ name");
+  res.send(posts);
+});
 
 router.get("/mypost", auth, async (req, res) => {
   const post = await Post.find({ postedBy: req.user._id }).populate(

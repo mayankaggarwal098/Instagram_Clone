@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import http from "../services/httpService";
 import { UserContext } from "./../App";
 import { toast } from "react-toastify";
+import Loading from "./loading";
 
 export default function UserProfile() {
   const { userId } = useParams();
   const { state, dispatch } = useContext(UserContext);
   const [profile, setProfile] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
+  //console.log(state);
   useEffect(() => {
     async function getProfile() {
       try {
@@ -17,7 +19,7 @@ export default function UserProfile() {
             "x-auth-token": localStorage.getItem("token"),
           },
         });
-        // console.log(data);
+        //console.log(data);
         setProfile(data);
       } catch (ex) {
         if (ex.response && ex.response.status === 404) {
@@ -40,11 +42,54 @@ export default function UserProfile() {
       }
     );
     console.log(data);
+    dispatch({
+      type: "UPDATE",
+      payload: { following: data.following, followers: data.followers },
+    });
+    localStorage.setItem("user", JSON.stringify(data));
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        user: {
+          ...prevState.user,
+          followers: [...prevState.user.followers, data._id],
+        },
+      };
+    });
+  };
+  const unfollowUser = async () => {
+    const { data } = await http.put(
+      "/unfollow",
+      { otherUserId: userId },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      }
+    );
+    console.log(data);
+    dispatch({
+      type: "UPDATE",
+      payload: { following: data.following, followers: data.followers },
+    });
+    localStorage.setItem("user", JSON.stringify(data));
+    setProfile((prevState) => {
+      const followers = prevState.user.followers.filter(
+        (id) => id !== data._id
+      );
+      return {
+        ...prevState,
+        user: {
+          ...prevState.user,
+          followers,
+        },
+      };
+    });
   };
 
   return (
     <React.Fragment>
-      {profile && (
+      {profile ? (
         <div className="container">
           <div
             style={{
@@ -56,7 +101,7 @@ export default function UserProfile() {
           >
             <div>
               <img
-                src="https://www.sapiens.org/wp-content/uploads/2019/07/01-5484600746_a29869fd35_o_compressed-1076x588.jpg"
+                src={profile.user.profilePic}
                 alt="profile img"
                 style={{
                   width: "150px",
@@ -68,12 +113,21 @@ export default function UserProfile() {
             <div>
               <h4>
                 {profile.user.name}&nbsp;&nbsp;
-                <button
-                  onClick={followUser}
-                  className="waves-effect waves-light btn-small #42a5f5 blue lighten-1"
-                >
-                  follow
-                </button>
+                {state && state.following.includes(userId) ? (
+                  <button
+                    onClick={unfollowUser}
+                    className="waves-effect waves-light btn-small #42a5f5 blue lighten-1"
+                  >
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    onClick={followUser}
+                    className="waves-effect waves-light btn-small #42a5f5 blue lighten-1"
+                  >
+                    follow
+                  </button>
+                )}
               </h4>
               <div
                 style={{
@@ -102,6 +156,8 @@ export default function UserProfile() {
             })}
           </div>
         </div>
+      ) : (
+        <Loading></Loading>
       )}
     </React.Fragment>
   );

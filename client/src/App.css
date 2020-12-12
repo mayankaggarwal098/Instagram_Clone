@@ -35,3 +35,11 @@ a {
 .insidecard {
   padding: 3%;
 }
+.loader {
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+}
+.material-icons:hover {
+  cursor: pointer;
+}
