@@ -6,21 +6,22 @@ const router = express.Router();
 router.get("/allpost", auth, async (req, res) => {
   const posts = await Post.find()
     .populate("postedBy", "_id name")
-    .populate("comments.postedBy", "id_ name");
+    .populate("comments.postedBy", "id_ name")
+    .sort("-createdAt");
   res.send(posts);
 });
 router.get("/allfollowingpost", auth, async (req, res) => {
   const posts = await Post.find({ postedBy: { $in: req.user.following } })
     .populate("postedBy", "_id name")
-    .populate("comments.postedBy", "id_ name");
+    .populate("comments.postedBy", "id_ name")
+    .sort("-createdAt");
   res.send(posts);
 });
 
 router.get("/mypost", auth, async (req, res) => {
-  const post = await Post.find({ postedBy: req.user._id }).populate(
-    "postedBy",
-    "_id name"
-  );
+  const post = await Post.find({ postedBy: req.user._id })
+    .populate("postedBy", "_id name")
+    .sort("-createdAt");
   res.send(post);
 });
 

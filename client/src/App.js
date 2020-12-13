@@ -15,6 +15,8 @@ import auth from "./services/authService";
 import Logout from "./components/logout";
 import UserProfile from "./components/userProfile";
 import Home from "./components/home";
+import ResetPassword from "./components/resetPassword";
+import UpdatePassword from "./components/updatePassword";
 
 export const UserContext = createContext();
 
@@ -27,7 +29,10 @@ const Routes = () => {
     if (user) {
       dispatch({ type: "USER", payload: user });
       // history.push("/");
-    } else {
+    } else if (
+      !history.location.pathname.startsWith("/reset") &&
+      !history.location.pathname.startsWith("/signup")
+    ) {
       history.push("/login");
     }
   }, []);
@@ -35,6 +40,8 @@ const Routes = () => {
     <div>
       <Switch>
         <Route path="/user/:userId" component={UserProfile} />
+        <Route path="/reset/:token" component={UpdatePassword} />
+        <Route path="/reset" component={ResetPassword} />
         <Route path="/login" component={LoginForm} />
         <Route path="/logout" component={Logout} />
         <Route path="/signup" component={RegisterForm} />

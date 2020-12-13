@@ -24,6 +24,14 @@ router.put("/updateProfilePic", auth, async (req, res) => {
   res.send(user);
 });
 
+router.post("/searchUser", auth, async (req, res) => {
+  const pattern = new RegExp("^" + req.body.query);
+  const user = await User.find({ email: { $regex: pattern } }).select(
+    "_id email profilePic name"
+  );
+  res.send(user);
+});
+
 router.put("/follow", auth, async (req, res) => {
   await User.findByIdAndUpdate(
     req.body.otherUserId,

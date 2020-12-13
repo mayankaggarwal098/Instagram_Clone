@@ -1,38 +1,41 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const postSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  body: {
-    type: String,
-    required: true,
-  },
-  photo: {
-    type: String,
-    required: true,
-  },
-  postedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  likes: [
-    {
+const postSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    body: {
+      type: String,
+      required: true,
+    },
+    photo: {
+      type: String,
+      required: true,
+    },
+    postedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "USER",
+      ref: "User",
     },
-  ],
-  comments: [
-    {
-      text: String,
-      postedBy: {
+    likes: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "USER",
       },
-    },
-  ],
-});
+    ],
+    comments: [
+      {
+        text: String,
+        postedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 const Post = mongoose.model("Post", postSchema);
 

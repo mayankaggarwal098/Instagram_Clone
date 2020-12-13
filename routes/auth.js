@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 
@@ -33,12 +34,12 @@ router.post("/signup", async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
 
   await user.save();
-  // transporter.sendMail({
-  //   to: user.email,
-  //   from: "no-reply@insta.com",
-  //   subject: "signup success",
-  //   html: "<h1>welcome to instagram</h1>",
-  // });
+  transporter.sendMail({
+    to: user.email,
+    from: "aggarwalmayank3515@gmail.com",
+    subject: "Welcome to INSTA-CLONE",
+    html: "<h2>Successfully Signed up to INSTA-CLONE</h2>",
+  });
   res.send(user);
 });
 
@@ -59,6 +60,51 @@ router.post("/signin", async (req, res) => {
   res.json({
     token,
     user: { _id, name, email, followers, following, profilePic },
+  });
+});
+
+router.post("/updatePassword", async (req, res) => {
+  const { password, token } = req.body;
+  const user = await User.findOne({
+    resetToken: token,
+    expireTokenTime: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).send("Session Expired");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+  user.resetToken = undefined;
+  user.expireTokenTime = undefined;
+
+  await user.save();
+  transporter.sendMail({
+    to: user.email,
+    from: "aggarwalmayank3515@gmail.com",
+    subject: "Password Updated Successfully",
+    html: "<h2>Your Insta-Clone account Password is updated</h2>",
+  });
+  res.send("Password Updated Successfully");
+});
+
+router.post("/resetPassword", async (req, res) => {
+  crypto.randomBytes(32, async (err, buf) => {
+    if (err) throw err;
+
+    const token = buf.toString("hex");
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("User not Registered");
+    user.resetToken = token;
+    user.expireTokenTime = Date.now() + 7200000; //2Hr
+    await user.save();
+    transporter.sendMail({
+      to: user.email,
+      from: "aggarwalmayank3515@gmail.com",
+      subject: "Password Reset of Insta-Clone",
+      html: `<h4>You  requested for reset password <br>Please click on this <a href="http://localhost:3000/reset/${token}">link</a> to reset password</h4>`,
+    });
+    res.send("Check your Mail");
   });
 });
 

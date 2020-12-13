@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
+    "materialize-css": "^1.0.0",
     "mongoose": "^5.10.17",
     "nodemailer": "^6.4.17",
     "nodemailer-sendgrid-transport": "^0.2.0"
