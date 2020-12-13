@@ -5,14 +5,14 @@ const router = express.Router();
 
 router.get("/allpost", auth, async (req, res) => {
   const posts = await Post.find()
-    .populate("postedBy", "_id name")
+    .populate("postedBy", "_id name profilePic")
     .populate("comments.postedBy", "id_ name")
     .sort("-createdAt");
   res.send(posts);
 });
 router.get("/allfollowingpost", auth, async (req, res) => {
   const posts = await Post.find({ postedBy: { $in: req.user.following } })
-    .populate("postedBy", "_id name")
+    .populate("postedBy", "_id name profilePic")
     .populate("comments.postedBy", "id_ name")
     .sort("-createdAt");
   res.send(posts);
@@ -51,7 +51,9 @@ router.put("/like", auth, async (req, res) => {
     {
       new: true,
     }
-  ).populate("postedBy", "_id name");
+  )
+    .populate("comments.postedBy", "_id name profilePic")
+    .populate("postedBy", "_id name profilePic");
 
   res.send(post);
 });
@@ -62,7 +64,9 @@ router.put("/unlike", auth, async (req, res) => {
       $pull: { likes: req.user._id },
     },
     { new: true }
-  ).populate("postedBy", "_id name");
+  )
+    .populate("comments.postedBy", "_id name profilePic")
+    .populate("postedBy", "_id name profilePic");
 
   res.send(post);
 });
@@ -81,8 +85,8 @@ router.put("/comment", auth, async (req, res) => {
       new: true,
     }
   )
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name");
+    .populate("comments.postedBy", "_id name profilePic")
+    .populate("postedBy", "_id name profilePic");
 
   res.send(post);
 });

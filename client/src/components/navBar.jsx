@@ -61,15 +61,26 @@ const NavBar = () => {
                   search
                 </i>
               </li>
-              ,
+
               <li>
-                <Link to="/explore">Explore</Link>
+                <Link to="/">
+                  <i className=" large material-icons">home</i>
+                </Link>
               </li>
               <li>
-                <Link to="/profile">Profile</Link>
+                <Link to="/explore">
+                  <i className=" large material-icons">explore</i>
+                </Link>
               </li>
               <li>
-                <Link to="/createpost">Create Post</Link>
+                <Link to="/profile">
+                  <i className=" large material-icons">person</i>
+                </Link>
+              </li>
+              <li>
+                <Link to="/createpost">
+                  <i className=" large material-icons">add_box</i>
+                </Link>
               </li>
               <li>
                 <Link to="/logout">Log Out</Link>

@@ -14,7 +14,7 @@ export default function Home() {
           "x-auth-token": localStorage.getItem("token"),
         },
       });
-
+      console.log(data);
       setPost(data);
     }
     getAllPost();
@@ -102,6 +102,17 @@ export default function Home() {
                     : "/profile"
                 }
               >
+                <img
+                  src={item.postedBy.profilePic}
+                  alt="profile pic"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    margin: "10px",
+                  }}
+                />
                 {item.postedBy.name}
               </Link>
               {item.postedBy._id === state._id && (
