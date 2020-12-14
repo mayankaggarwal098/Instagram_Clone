@@ -4,8 +4,7 @@ import { toast } from "react-toastify";
 
 export default function CreatePost() {
   const history = useHistory();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  const [caption, setcaption] = useState("");
   const [image, setImage] = useState("");
   const [url, setUrl] = useState("");
 
@@ -18,8 +17,7 @@ export default function CreatePost() {
           "x-auth-token": localStorage.getItem("token"),
         },
         body: JSON.stringify({
-          title,
-          body,
+          caption,
           img: url,
         }),
       })
@@ -75,19 +73,12 @@ export default function CreatePost() {
       <div className="input-field">
         <input
           type="text"
-          placeholder="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          placeholder="caption"
+          value={caption}
+          onChange={(e) => setcaption(e.target.value)}
         />
       </div>
-      <div className="input-field ">
-        <input
-          type="text"
-          placeholder="body"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-        />
-      </div>
+
       <div className="file-field input-field">
         <div className="btn  #42a5f5 blue lighten-1">
           <span>File</span>

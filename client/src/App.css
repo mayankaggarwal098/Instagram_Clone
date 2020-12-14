@@ -25,7 +25,8 @@ a {
   justify-content: space-around;
 }
 .mypic {
-  width: 30%;
+  max-width: 30%;
+  max-height: 30vh;
   margin: 10px 0px;
 }
 .home {

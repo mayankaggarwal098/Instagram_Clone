@@ -19,5 +19,11 @@ export const reducer = (state, action) => {
       profilePic: action.payload,
     };
   }
+  if (action.type === "BOOKMARK") {
+    return {
+      ...state,
+      bookmarks: action.payload.bookmarks,
+    };
+  }
   return state;
 };

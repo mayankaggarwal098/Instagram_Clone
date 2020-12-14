@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.4.0",
     "axios": "^0.21.0",
+    "font-awesome": "^4.7.0",
     "joi-browser": "^13.4.0",
     "jwt-decode": "^3.1.2",
     "react": "^17.0.1",

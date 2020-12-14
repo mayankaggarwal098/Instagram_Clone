@@ -6,6 +6,8 @@ import { UserContext } from "./../App";
 export default function Profile() {
   const [post, setPost] = useState([]);
   const [profileImage, setProfileImage] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
+  const [leftTab, setLeftTab] = useState(true);
   const { state, dispatch } = useContext(UserContext);
   const user = JSON.parse(localStorage.getItem("user"));
   console.log(state);
@@ -19,6 +21,17 @@ export default function Profile() {
       setPost(data);
     }
     getMyPost();
+
+    async function getBookmarks() {
+      const { data } = await http.get("/bookmarks", {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      });
+      console.log(data);
+      setBookmarks(data);
+    }
+    getBookmarks();
   }, []);
 
   useEffect(() => {
@@ -75,7 +88,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container">
+    <div className="home">
       <div
         style={{
           display: "flex",
@@ -96,7 +109,7 @@ export default function Profile() {
             }}
           />
           <div className="file-field input-field">
-            <div className="btn  #42a5f5 blue lighten-1">
+            <div className="btn  #42a5f5 blue lighten-1 tiny">
               <span>Update Pic</span>
 
               <input
@@ -111,6 +124,7 @@ export default function Profile() {
         </div>
         <div>
           <h4>{user.name}</h4>
+          <h5>{user.email}</h5>
           <div
             style={{
               display: "flex",
@@ -126,18 +140,49 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <div className="mypost">
-        {post.map((item) => {
-          return (
-            <img
-              src={item.photo}
-              alt={item.title}
-              key={item._id}
-              className="mypic"
-            />
-          );
-        })}
+      <div class="card-tabs">
+        <ul class="tabs tabs-fixed-width">
+          <li class="tab">
+            <a href="#mypost" class="active" onClick={() => setLeftTab(true)}>
+              <i class="material-icons">grid_on</i> POSTS
+            </a>
+          </li>
+          <li class="tab">
+            <a href="#mybookmarks" onClick={() => setLeftTab(false)}>
+              <i class="material-icons">bookmark_border</i> SAVED
+            </a>
+          </li>
+        </ul>
       </div>
+
+      {leftTab && (
+        <div className="mypost">
+          {post.map((item) => {
+            return (
+              <img
+                src={item.photo}
+                alt={item.caption}
+                key={item._id}
+                className="mypic"
+              />
+            );
+          })}
+        </div>
+      )}
+      {!leftTab && (
+        <div className="mypost">
+          {bookmarks.map((item) => {
+            return (
+              <img
+                src={item.photo}
+                alt={item.caption}
+                key={item._id}
+                className="mypic"
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

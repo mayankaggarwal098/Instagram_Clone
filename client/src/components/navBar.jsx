@@ -36,10 +36,10 @@ const NavBar = () => {
   return (
     <nav>
       <div className="nav-wrapper white ">
-        <Link to={state ? "/" : "/login"} className="brand-logo">
+        <Link to={state ? "/" : "/login"} className="brand-logo left">
           <img alt="instagram logo" src={logo} width="100" height="50" />
         </Link>
-        <ul id="nav-mobile" className="right hide-on-med-and-down">
+        <ul id="nav-mobile" className="right ">
           {!state && (
             <React.Fragment>
               <li>

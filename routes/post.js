@@ -1,6 +1,7 @@
 const express = require("express");
 const auth = require("../middleware/auth");
 const { Post, validatePost } = require("../models/post");
+const { User } = require("../models/user");
 const router = express.Router();
 
 router.get("/allpost", auth, async (req, res) => {
@@ -29,11 +30,11 @@ router.post("/createpost", auth, async (req, res) => {
   const { error } = validatePost(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message }); //send(error.details[0].message);
 
-  const { title, body, img } = req.body;
+  const { caption, img } = req.body;
   req.user.password = undefined;
   const post = new Post({
-    title,
-    body,
+    caption,
+
     photo: img,
     postedBy: req.user,
   });
@@ -101,6 +102,39 @@ router.delete("/deletepost/:id", auth, async (req, res) => {
     await post.remove();
     res.send("deleted successfully");
   }
+});
+
+router.put("/bookmarkPost", auth, async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $push: { bookmarks: req.body.postId },
+    },
+    { new: true }
+  ).select("-password");
+  res.send(user);
+});
+router.put("/removeBookmarkPost", auth, async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $pull: { bookmarks: req.body.postId },
+    },
+    { new: true }
+  ).select("-password");
+  res.send(user);
+});
+
+router.get("/bookmarks", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  const data = user.bookmarks;
+
+  const posts = await Post.find({ _id: { $in: data } }).populate(
+    "postedBy",
+    "_id name"
+  );
+
+  res.send(posts);
 });
 
 module.exports = router;

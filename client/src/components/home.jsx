@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 export default function Home() {
   const [post, setPost] = useState([]);
   const { state, dispatch } = useContext(UserContext);
+  const [comment, setComment] = useState("");
   useEffect(() => {
     async function getAllPost() {
       const { data } = await http.get("/allfollowingpost", {
@@ -14,7 +15,7 @@ export default function Home() {
           "x-auth-token": localStorage.getItem("token"),
         },
       });
-      console.log(data);
+
       setPost(data);
     }
     getAllPost();
@@ -54,6 +55,7 @@ export default function Home() {
   };
 
   const postComment = async (text, postId) => {
+    setComment("");
     const { data } = await http.put(
       "/comment",
       { text, postId },
@@ -68,6 +70,7 @@ export default function Home() {
       else return item;
     });
     setPost(newPost);
+    setComment("");
   };
   const deletePost = async (postId) => {
     const originalPost = post;
@@ -89,11 +92,57 @@ export default function Home() {
       setPost(originalPost);
     }
   };
+
+  const bookmark = async (id) => {
+    try {
+      const { data } = await http.put(
+        `/bookmarkPost`,
+        { postId: id },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+      dispatch({
+        type: "BOOKMARK",
+        payload: { bookmarks: data.bookmarks },
+      });
+      localStorage.setItem("user", JSON.stringify(data));
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    }
+  };
+  const removeBookmark = async (id) => {
+    try {
+      const { data } = await http.put(
+        `/removeBookmarkPost`,
+        { postId: id },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+      dispatch({
+        type: "BOOKMARK",
+        payload: { bookmarks: data.bookmarks },
+      });
+      localStorage.setItem("user", JSON.stringify(data));
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    }
+  };
+  console.log(state);
   return (
     <div className="home">
       {post.map((item) => {
         return (
-          <div className="card" key={item._id}>
+          <div className="card" key={item._id} style={{ padding: "0.5px" }}>
             <h5>
               <Link
                 to={
@@ -101,16 +150,18 @@ export default function Home() {
                     ? `/user/${item.postedBy._id}`
                     : "/profile"
                 }
+                style={{ marginLeft: "10px" }}
               >
                 <img
                   src={item.postedBy.profilePic}
                   alt="profile pic"
                   style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "20px",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
                     cursor: "pointer",
-                    margin: "10px",
+                    marginLeft: "10px",
+                    float: "left",
                   }}
                 />
                 {item.postedBy.name}
@@ -131,30 +182,60 @@ export default function Home() {
               <img src={item.photo} alt={item.title} />
             </div>
             <div className="card-content">
-              {item.likes.includes(state._id) ? (
+              <span>
+                {item.likes.includes(state._id) ? (
+                  <i
+                    className="material-icons"
+                    style={{ color: "red", float: "left" }}
+                    onClick={() => {
+                      unlikePost(item._id);
+                    }}
+                  >
+                    favorite
+                  </i>
+                ) : (
+                  <i
+                    className="material-icons"
+                    style={{ float: "left" }}
+                    onClick={() => {
+                      likePost(item._id);
+                    }}
+                  >
+                    favorite_border
+                  </i>
+                )}
+
+                <a href={`#` + item._id}>
+                  <i
+                    class="fa fa-comment-o"
+                    style={{ marginLeft: "15px", fontSize: "23px" }}
+                    aria-hidden="true"
+                  ></i>
+                </a>
+              </span>
+              {state && state.bookmarks.includes(item._id) ? (
                 <i
                   className="material-icons"
-                  style={{ color: "red" }}
-                  onClick={() => {
-                    unlikePost(item._id);
+                  style={{
+                    float: "right",
                   }}
+                  onClick={() => removeBookmark(item._id)}
                 >
-                  favorite
+                  bookmark
                 </i>
               ) : (
                 <i
                   className="material-icons"
-                  onClick={() => {
-                    likePost(item._id);
+                  style={{
+                    float: "right",
                   }}
+                  onClick={() => bookmark(item._id)}
                 >
-                  favorite_border
+                  bookmark_border
                 </i>
               )}
-
               <h6>{item.likes.length} likes</h6>
               <h6>{item.title}</h6>
-              <p>{item.body}</p>
               {item.comments.map((comment) => {
                 return (
                   <p key={comment._id}>
@@ -171,7 +252,13 @@ export default function Home() {
               }}
             >
               <div className="card-action">
-                <input type="text" placeholder="Add a comment" />
+                <input
+                  type="text"
+                  placeholder="Add a comment"
+                  id={item._id}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
               </div>
             </form>
           </div>

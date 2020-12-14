@@ -148,7 +148,7 @@ export default function UserProfile() {
               return (
                 <img
                   src={item.photo}
-                  alt={item.title}
+                  alt={item.caption}
                   key={item._id}
                   className="mypic"
                 />
