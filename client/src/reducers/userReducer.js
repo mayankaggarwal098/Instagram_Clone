@@ -5,6 +5,13 @@ export const reducer = (state, action) => {
 
   if (action.type === "DELETE") return null;
 
+  if (action.type === "BOOKMARK") {
+    return {
+      ...state,
+      bookmarks: action.payload.bookmarks,
+    };
+  }
+
   if (action.type === "UPDATE") {
     const { followers, following } = action.payload;
     return {
@@ -19,11 +26,6 @@ export const reducer = (state, action) => {
       profilePic: action.payload,
     };
   }
-  if (action.type === "BOOKMARK") {
-    return {
-      ...state,
-      bookmarks: action.payload.bookmarks,
-    };
-  }
+
   return state;
 };

@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/user/:id", auth, async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
+
   if (!user) return res.status(404).send("User Not Found");
   const posts = await Post.find({ postedBy: req.params.id }).populate(
     "postedBy",

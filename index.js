@@ -11,10 +11,6 @@ mongoose
 
 require("./models/user");
 
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   next();
-// });
 app.use(express.json());
 app.use(require("./routes/auth"));
 app.use(require("./routes/post"));

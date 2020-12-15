@@ -1,10 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import logo from "../instagram-font-png-1.png";
-import { Link, useHistory, useParams } from "react-router-dom";
-import auth from "../services/authService";
+import { useHistory, useParams } from "react-router-dom";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
-import { UserContext } from "../App";
 import http from "./../services/httpService";
 
 export default function UpdatePassword() {
@@ -23,7 +21,7 @@ export default function UpdatePassword() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); //prevents application reloading
+    e.preventDefault();
     if (validate()) return;
     try {
       const { data } = await http.post("/updatePassword", { token, password });

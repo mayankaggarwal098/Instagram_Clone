@@ -8,10 +8,8 @@ import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
 import Profile from "./components/myProfile";
 import CreatePost from "./components/createPost";
-
 import "react-toastify/dist/ReactToastify.css";
 import { initialState, reducer } from "./reducers/userReducer";
-import auth from "./services/authService";
 import Logout from "./components/logout";
 import UserProfile from "./components/userProfile";
 import Home from "./components/home";
@@ -22,13 +20,12 @@ export const UserContext = createContext();
 
 const Routes = () => {
   const history = useHistory();
-  const { state, dispatch } = useContext(UserContext);
-  //excutes only once when application loads
+  const { dispatch } = useContext(UserContext);
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       dispatch({ type: "USER", payload: user });
-      // history.push("/");
     } else if (
       !history.location.pathname.startsWith("/reset") &&
       !history.location.pathname.startsWith("/signup")
@@ -60,7 +57,7 @@ function App() {
   return (
     <React.Fragment>
       <UserContext.Provider value={{ state, dispatch }}>
-        <ToastContainer />
+        <ToastContainer autoClose={2000} />
         <NavBar></NavBar>
         <Routes />
       </UserContext.Provider>

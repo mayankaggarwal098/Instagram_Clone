@@ -6,7 +6,7 @@ import M from "materialize-css";
 import http from "./../services/httpService";
 
 const NavBar = () => {
-  const { state, dispatch } = useContext(UserContext);
+  const { state } = useContext(UserContext);
   const elements = useRef(null);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -29,7 +29,7 @@ const NavBar = () => {
         },
       }
     );
-    console.log(data);
+    // console.log(data);
     setSearchResult(data);
   };
 
@@ -119,9 +119,6 @@ const NavBar = () => {
                     setSearch("");
                   }}
                 >
-                  {/* <li className="collection-item" style={{ width: "100%" }}>
-                    {user.email}
-                  </li> */}
                   {
                     <li
                       className="collection-item avatar"

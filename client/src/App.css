@@ -24,9 +24,23 @@ a {
   flex-direction: row;
   justify-content: space-around;
 }
+.sideimg {
+  display: flex;
+  flex-direction: row;
+}
+.sidescreen {
+  width: 40% !important;
+  height: 90vh !important;
+  margin-top: 20px;
+}
+.rightscreen {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 115px;
+}
 .mypic {
-  max-width: 30%;
-  max-height: 30vh;
+  width: 30%;
+  height: 30vh;
   margin: 10px 0px;
 }
 .home {

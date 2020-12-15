@@ -34,7 +34,6 @@ router.post("/createpost", auth, async (req, res) => {
   req.user.password = undefined;
   const post = new Post({
     caption,
-
     photo: img,
     postedBy: req.user,
   });

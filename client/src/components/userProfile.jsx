@@ -9,7 +9,7 @@ export default function UserProfile() {
   const { userId } = useParams();
   const { state, dispatch } = useContext(UserContext);
   const [profile, setProfile] = useState(null);
-  const user = JSON.parse(localStorage.getItem("user"));
+  //const user = JSON.parse(localStorage.getItem("user"));
   //console.log(state);
   useEffect(() => {
     async function getProfile() {
@@ -22,7 +22,7 @@ export default function UserProfile() {
         //console.log(data);
         setProfile(data);
       } catch (ex) {
-        if (ex.response && ex.response.status === 404) {
+        if (ex.response && ex.response.status === 400) {
           toast.error(ex.response.data);
           console.log(ex);
         }
@@ -41,7 +41,7 @@ export default function UserProfile() {
         },
       }
     );
-    console.log(data);
+    // console.log(data);
     dispatch({
       type: "UPDATE",
       payload: { following: data.following, followers: data.followers },
@@ -67,7 +67,7 @@ export default function UserProfile() {
         },
       }
     );
-    console.log(data);
+    // console.log(data);
     dispatch({
       type: "UPDATE",
       payload: { following: data.following, followers: data.followers },
@@ -90,7 +90,7 @@ export default function UserProfile() {
   return (
     <React.Fragment>
       {profile ? (
-        <div className="container">
+        <div className="home">
           <div
             style={{
               display: "flex",
@@ -129,6 +129,7 @@ export default function UserProfile() {
                   </button>
                 )}
               </h4>
+              <h5>{profile.user.email}</h5>
               <div
                 style={{
                   display: "flex",

@@ -84,7 +84,6 @@ export default function CommonHome(props) {
           "x-auth-token": localStorage.getItem("token"),
         },
       });
-      console.log("abc");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error("Invalid Request");
@@ -180,8 +179,8 @@ export default function CommonHome(props) {
             <div className="card-image">
               <img
                 src={item.photo}
-                alt={item.title}
-                style={{ maxHeight: "80vh" }}
+                alt={item.caption}
+                style={{ maxHeight: "90vh" }}
               />
             </div>
             <div className="card-content">
@@ -210,7 +209,7 @@ export default function CommonHome(props) {
 
                 <a href={`#` + item._id}>
                   <i
-                    class="fa fa-comment-o"
+                    className="fa fa-comment-o"
                     style={{ marginLeft: "15px", fontSize: "23px" }}
                     aria-hidden="true"
                   ></i>
@@ -238,7 +237,7 @@ export default function CommonHome(props) {
                 </i>
               )}
               <h6>{item.likes.length} likes</h6>
-              <h6>{item.title}</h6>
+              <h6>{item.caption}</h6>
               {item.comments.map((comment) => {
                 return (
                   <p key={comment._id}>

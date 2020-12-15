@@ -1,4 +1,3 @@
-//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
 const { User, validateSignup, validateSignin } = require("../models/user");
 const { jwtPrivateKey } = require("../config/keys");
 const mongoose = require("mongoose");
@@ -64,7 +63,6 @@ router.post("/signin", async (req, res) => {
     profilePic,
     bookmarks,
   } = user;
-  //res.send(token);
   res.json({
     token,
     user: { _id, name, email, followers, following, profilePic, bookmarks },

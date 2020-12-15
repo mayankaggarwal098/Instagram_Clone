@@ -10,7 +10,7 @@ export default function Profile() {
   const [leftTab, setLeftTab] = useState(true);
   const { state, dispatch } = useContext(UserContext);
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(state);
+  //console.log(state);
   useEffect(() => {
     async function getMyPost() {
       const { data } = await http.get("/mypost", {
@@ -28,7 +28,7 @@ export default function Profile() {
           "x-auth-token": localStorage.getItem("token"),
         },
       });
-      console.log(data);
+
       setBookmarks(data);
     }
     getBookmarks();
@@ -42,8 +42,8 @@ export default function Profile() {
         data.append("file", profileImage);
 
         data.append("cloud_name", "cloud098");
-        console.log(data);
-        //const url="https://api.cloudinary.com/v1_1/cloud098/image/upload";
+        //console.log(data);
+
         try {
           await saveProfileImage(data);
         } catch (ex) {
@@ -55,6 +55,19 @@ export default function Profile() {
     };
     updateProfilePic();
   }, [profileImage]);
+
+  const imageValidation = (img) => {
+    if (!img) {
+      toast.error("Please select Image");
+      return;
+    }
+    if (!img.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      toast.error("Please select valid Image");
+      return;
+    }
+    setProfileImage(img);
+  };
+
   const saveProfileImage = (data) => {
     return fetch("https://api.cloudinary.com/v1_1/cloud098/image/upload", {
       method: "post",
@@ -74,7 +87,7 @@ export default function Profile() {
         })
           .then((res) => res.json())
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             localStorage.setItem(
               "user",
               JSON.stringify({ ...state, profilePic: result.profilePic })
@@ -82,7 +95,7 @@ export default function Profile() {
             dispatch({ type: "UPDATEPROFILEPIC", payload: result.profilePic });
           })
           .catch((err) => {
-            console.log(err);
+            //    console.log(err);
           });
       });
   };
@@ -105,7 +118,6 @@ export default function Profile() {
               width: "150px",
               height: "150px",
               borderRadius: "75px",
-              cursor: "pointer",
             }}
           />
           <div className="file-field input-field">
@@ -116,12 +128,10 @@ export default function Profile() {
               <span>Upload Img</span>
               <input
                 type="file"
-                onChange={(e) => setProfileImage(e.target.files[0])}
+                onChange={(e) => imageValidation(e.target.files[0])}
+                accept="image/*"
               />
             </div>
-            {/* <div className="file-path-wrapper">
-              <input className="file-path validate" type="text" />
-            </div> */}
           </div>
         </div>
         <div>
@@ -142,19 +152,23 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <div class="card-tabs">
-        <ul class="tabs tabs-fixed-width">
-          <li class="tab">
-            <a href="#mypost" class="active" onClick={() => setLeftTab(true)}>
-              <i class="material-icons" style={{ verticalAlign: "sub" }}>
+      <div className="card-tabs">
+        <ul className="tabs tabs-fixed-width">
+          <li className="tab">
+            <a
+              href="#mypost"
+              className="active"
+              onClick={() => setLeftTab(true)}
+            >
+              <i className="material-icons" style={{ verticalAlign: "sub" }}>
                 grid_on
               </i>{" "}
               POSTS
             </a>
           </li>
-          <li class="tab">
+          <li className="tab">
             <a href="#mybookmarks" onClick={() => setLeftTab(false)}>
-              <i class="material-icons" style={{ verticalAlign: "sub" }}>
+              <i className="material-icons" style={{ verticalAlign: "sub" }}>
                 bookmark_border
               </i>{" "}
               SAVED

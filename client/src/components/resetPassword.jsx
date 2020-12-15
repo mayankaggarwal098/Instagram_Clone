@@ -1,10 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import logo from "../instagram-font-png-1.png";
-import { Link, useHistory } from "react-router-dom";
-import auth from "../services/authService";
+import { useHistory } from "react-router-dom";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
-import { UserContext } from "../App";
 import http from "./../services/httpService";
 
 export default function ResetPassword() {
@@ -23,11 +21,11 @@ export default function ResetPassword() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); //prevents application reloading
+    e.preventDefault();
     if (validate()) return;
     try {
       const { data } = await http.post("/resetPassword", { email });
-      console.log(data);
+      //  console.log(data);
       toast(data);
       history.push("/login");
     } catch (ex) {
