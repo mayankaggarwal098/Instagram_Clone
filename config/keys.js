@@ -1,5 +1,5 @@
-module.exports = {
-  MONOGOURI: "mongodb://localhost/instagram",
-  jwtPrivateKey: "abcd",
-};
-//"mongodb+srv://mayank:mayank@cluster0.bzxdg.mongodb.net/instagram?retryWrites=true&w=majority"
+if (process.env.NODE_ENV === "production") {
+  module.exports = require("./prod");
+} else {
+  module.exports = require("./dev");
+}

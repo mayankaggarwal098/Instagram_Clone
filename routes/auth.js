@@ -1,5 +1,5 @@
 const { User, validateSignup, validateSignin } = require("../models/user");
-const { jwtPrivateKey } = require("../config/keys");
+const { jwtPrivateKey, SENDGRID_API_KEY, EMAIL } = require("../config/keys");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -13,8 +13,7 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key:
-        "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",
+      api_key: SENDGRID_API_KEY,
     },
   })
 );
@@ -108,7 +107,7 @@ router.post("/resetPassword", async (req, res) => {
       to: user.email,
       from: "aggarwalmayank3515@gmail.com",
       subject: "Password Reset of Insta-Clone",
-      html: `<h4>You  requested for reset password <br>Please click on this <a href="http://localhost:3000/reset/${token}">link</a> to reset password</h4>`,
+      html: `<h4>You  requested for reset password <br>Please click on this <a href="${EMAIL}/reset/${token}">link</a> to reset password</h4>`,
     });
     res.send("Check your Mail");
   });
