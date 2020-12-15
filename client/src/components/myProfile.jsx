@@ -109,17 +109,19 @@ export default function Profile() {
             }}
           />
           <div className="file-field input-field">
-            <div className="btn  #42a5f5 blue lighten-1 tiny">
-              <span>Update Pic</span>
-
+            <div
+              className="btn-small  #42a5f5 blue lighten-1 "
+              style={{ marginLeft: "15px", marginBottom: "15px" }}
+            >
+              <span>Upload Img</span>
               <input
                 type="file"
                 onChange={(e) => setProfileImage(e.target.files[0])}
               />
             </div>
-            <div className="file-path-wrapper">
+            {/* <div className="file-path-wrapper">
               <input className="file-path validate" type="text" />
-            </div>
+            </div> */}
           </div>
         </div>
         <div>
@@ -144,12 +146,18 @@ export default function Profile() {
         <ul class="tabs tabs-fixed-width">
           <li class="tab">
             <a href="#mypost" class="active" onClick={() => setLeftTab(true)}>
-              <i class="material-icons">grid_on</i> POSTS
+              <i class="material-icons" style={{ verticalAlign: "sub" }}>
+                grid_on
+              </i>{" "}
+              POSTS
             </a>
           </li>
           <li class="tab">
             <a href="#mybookmarks" onClick={() => setLeftTab(false)}>
-              <i class="material-icons">bookmark_border</i> SAVED
+              <i class="material-icons" style={{ verticalAlign: "sub" }}>
+                bookmark_border
+              </i>{" "}
+              SAVED
             </a>
           </li>
         </ul>
