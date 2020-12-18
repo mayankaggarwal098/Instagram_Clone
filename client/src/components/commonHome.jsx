@@ -3,6 +3,7 @@ import http from "../services/httpService";
 import { UserContext } from "../App";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import Suggestions from "./suggestions";
 
 export default function CommonHome(props) {
   const [post, setPost] = useState([]);
@@ -138,134 +139,138 @@ export default function CommonHome(props) {
   };
   return (
     <div className="home">
-      {post.map((item) => {
-        return (
-          <div className="card" key={item._id} style={{ padding: "0.5px" }}>
-            <h5>
-              <Link
-                to={
-                  item.postedBy._id !== state._id
-                    ? `/user/${item.postedBy._id}`
-                    : "/profile"
-                }
-                style={{ marginLeft: "10px" }}
-              >
-                <img
-                  src={item.postedBy.profilePic}
-                  alt="profile pic"
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                    float: "left",
-                  }}
-                />
-                {item.postedBy.name}
-              </Link>
-              {item.postedBy._id === state._id && (
-                <i
-                  className="material-icons"
-                  style={{
-                    float: "right",
-                  }}
-                  onClick={() => deletePost(item._id)}
+      {post.length === 0 ? (
+        <Suggestions />
+      ) : (
+        post.map((item) => {
+          return (
+            <div className="card" key={item._id} style={{ padding: "0.5px" }}>
+              <h5>
+                <Link
+                  to={
+                    item.postedBy._id !== state._id
+                      ? `/user/${item.postedBy._id}`
+                      : "/profile"
+                  }
+                  style={{ marginLeft: "10px" }}
                 >
-                  delete
-                </i>
-              )}
-            </h5>
-            <div className="card-image">
-              <img
-                src={item.photo}
-                alt={item.caption}
-                style={{ maxHeight: "90vh" }}
-              />
-            </div>
-            <div className="card-content">
-              <span>
-                {item.likes.includes(state._id) ? (
+                  <img
+                    src={item.postedBy.profilePic}
+                    alt="profile pic"
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      cursor: "pointer",
+                      marginLeft: "10px",
+                      float: "left",
+                    }}
+                  />
+                  {item.postedBy.name}
+                </Link>
+                {item.postedBy._id === state._id && (
                   <i
                     className="material-icons"
-                    style={{ color: "red", float: "left" }}
-                    onClick={() => {
-                      unlikePost(item._id);
+                    style={{
+                      float: "right",
                     }}
+                    onClick={() => deletePost(item._id)}
                   >
-                    favorite
+                    delete
+                  </i>
+                )}
+              </h5>
+              <div className="card-image">
+                <img
+                  src={item.photo}
+                  alt={item.caption}
+                  style={{ maxHeight: "90vh" }}
+                />
+              </div>
+              <div className="card-content">
+                <span>
+                  {item.likes.includes(state._id) ? (
+                    <i
+                      className="material-icons"
+                      style={{ color: "red", float: "left" }}
+                      onClick={() => {
+                        unlikePost(item._id);
+                      }}
+                    >
+                      favorite
+                    </i>
+                  ) : (
+                    <i
+                      className="material-icons"
+                      style={{ float: "left" }}
+                      onClick={() => {
+                        likePost(item._id);
+                      }}
+                    >
+                      favorite_border
+                    </i>
+                  )}
+
+                  <a href={`#` + item._id}>
+                    <i
+                      className="fa fa-comment-o"
+                      style={{ marginLeft: "15px", fontSize: "23px" }}
+                      aria-hidden="true"
+                    ></i>
+                  </a>
+                </span>
+                {state && state.bookmarks.includes(item._id) ? (
+                  <i
+                    className="material-icons"
+                    style={{
+                      float: "right",
+                    }}
+                    onClick={() => removeBookmark(item._id)}
+                  >
+                    bookmark
                   </i>
                 ) : (
                   <i
                     className="material-icons"
-                    style={{ float: "left" }}
-                    onClick={() => {
-                      likePost(item._id);
+                    style={{
+                      float: "right",
                     }}
+                    onClick={() => bookmark(item._id)}
                   >
-                    favorite_border
+                    bookmark_border
                   </i>
                 )}
-
-                <a href={`#` + item._id}>
-                  <i
-                    className="fa fa-comment-o"
-                    style={{ marginLeft: "15px", fontSize: "23px" }}
-                    aria-hidden="true"
-                  ></i>
-                </a>
-              </span>
-              {state && state.bookmarks.includes(item._id) ? (
-                <i
-                  className="material-icons"
-                  style={{
-                    float: "right",
-                  }}
-                  onClick={() => removeBookmark(item._id)}
-                >
-                  bookmark
-                </i>
-              ) : (
-                <i
-                  className="material-icons"
-                  style={{
-                    float: "right",
-                  }}
-                  onClick={() => bookmark(item._id)}
-                >
-                  bookmark_border
-                </i>
-              )}
-              <h6>{item.likes.length} likes</h6>
-              <h6>{item.caption}</h6>
-              {item.comments.map((comment) => {
-                return (
-                  <p key={comment._id}>
-                    <b>{comment.postedBy.name}&nbsp;</b>
-                    {comment.text}
-                  </p>
-                );
-              })}
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                postComment(e.target[0].value, item._id);
-              }}
-            >
-              <div className="card-action">
-                <input
-                  type="text"
-                  placeholder="Add a comment"
-                  id={item._id}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
+                <h6>{item.likes.length} likes</h6>
+                <h6>{item.caption}</h6>
+                {item.comments.map((comment) => {
+                  return (
+                    <p key={comment._id}>
+                      <b>{comment.postedBy.name}&nbsp;</b>
+                      {comment.text}
+                    </p>
+                  );
+                })}
               </div>
-            </form>
-          </div>
-        );
-      })}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  postComment(e.target[0].value, item._id);
+                }}
+              >
+                <div className="card-action">
+                  <input
+                    type="text"
+                    placeholder="Add a comment"
+                    id={item._id}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </div>
+              </form>
+            </div>
+          );
+        })
+      )}
     </div>
   );
 }
