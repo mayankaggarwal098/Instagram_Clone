@@ -9,6 +9,8 @@ export default function CommonHome(props) {
   const [post, setPost] = useState([]);
   const { state, dispatch } = useContext(UserContext);
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function getAllPost() {
       const { data } = await http.get(props.route, {
@@ -18,6 +20,7 @@ export default function CommonHome(props) {
       });
 
       setPost(data);
+      setLoading(false);
     }
     getAllPost();
   }, []);
@@ -139,7 +142,7 @@ export default function CommonHome(props) {
   };
   return (
     <div className="home">
-      {post.length === 0 ? (
+      {!loading && post.length === 0 ? (
         <Suggestions />
       ) : (
         post.map((item) => {
