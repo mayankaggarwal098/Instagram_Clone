@@ -103,11 +103,11 @@ export default function CreatePost() {
             accept="image/*"
           />
         </div>
-        {flag && (
+        {
           <div className="file-path-wrapper">
             <input className="file-path validate" type="text" />
           </div>
-        )}
+        }
       </div>
       {flag && (
         <button

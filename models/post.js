@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    //contains url
     photo: {
       type: String,
       required: true,

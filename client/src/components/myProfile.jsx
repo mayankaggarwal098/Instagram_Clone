@@ -132,6 +132,11 @@ export default function Profile() {
                 accept="image/*"
               />
             </div>
+            {
+              <div className="file-path-wrapper">
+                <input className="file-path validate" type="text" />
+              </div>
+            }
           </div>
         </div>
         <div>
